@@ -18,13 +18,16 @@ class FileService {
     public async uploadFile(bucket: R2Bucket, data: any) {
         //get value from form data
         const file = data.get('file')
-        console.log(file)
+
         if (!file) {
             throw new HTTPException(400, {message: 'File not found'})
         }
+
+        const temp_filename = new Date().getTime().toString();
+        const fileName = temp_filename + '_' + file.name.trim().replace(/ /g, '_');
         const fileData = await file.arrayBuffer()
-        return await bucket.put(
-            file.name,
+        await bucket.put(
+            fileName,
             fileData,
             {
                 httpMetadata: {
@@ -32,6 +35,10 @@ class FileService {
                 }
             }
         )
+
+        return {
+            key: fileName,
+        }
     }
 
     public async getFile(c: Context, bucket: R2Bucket, key: string) {

@@ -17,3 +17,9 @@ export enum PAYMENT_METHOD {
     COD = 'cod',
     VNPAY = 'vnpay',
 }
+
+export enum UPDATE_CART_ACTION {
+    INCREASE = 'INCREASE',
+    DECREASE = 'DECREASE',
+    REMOVE = 'REMOVE'
+}

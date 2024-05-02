@@ -15,8 +15,11 @@ bucket_name = "shopping-bucket"
 
 [[d1_databases]]
 binding = "DB" # i.e. available in your Worker on env.DB
-database_name = "shopping-db"
-database_id = "62664d60-cf7b-4f97-ad50-0c8dc0227a0a"
+database_name = "online-shopping-db"
+database_id = "97ac9cce-97dc-4bbe-9b11-738557f5658e"
+
+
+
 
 
 

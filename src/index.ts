@@ -3,6 +3,8 @@ import {DrizzleD1Database} from "drizzle-orm/d1";
 import api from "./modules";
 import {showRoutes} from "hono/dev";
 import {HTTPException} from "hono/http-exception";
+import {swaggerUI} from "@hono/swagger-ui";
+import {OpenAPIHono} from "@hono/zod-openapi";
 
 
 type Bindings = {
@@ -16,7 +18,18 @@ type Variables = {
   db: DrizzleD1Database
 }
 
-const app = new Hono<{ Bindings: Bindings, Variables: Variables }>()
+const app = new OpenAPIHono<{ Bindings: Bindings, Variables: Variables }>()
+
+
+// Use the middleware to serve Swagger UI at /ui
+app.get('/doc', swaggerUI({ url: '/swagger-doc' }))
+app.doc('/swagger-doc', {
+  info: {
+    title: 'Online shopping API',
+    version: 'v1'
+  },
+  openapi: '3.1.0'
+})
 
 app.get('/', (c) => c.text("Hello, I'm Hono! I'm running on cloudflare workers!"))
 app.notFound((c: Context) => c.json({message: 'Not Found', ok: false}, 404))

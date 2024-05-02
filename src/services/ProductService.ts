@@ -59,7 +59,7 @@ class ProductService {
     }
 
     public async createProduct(db: DrizzleD1Database, data: any) {
-        const categoryExists = await db.select().from(categories).where(eq(categories.id, data.categoryId)).get()
+        const categoryExists = await db.select().from(categories).where(eq(categories.name, data.category)).get()
         if (!categoryExists) {
             throw new HTTPException(400, {message: 'Category not found'})
         }
@@ -87,10 +87,24 @@ class ProductService {
             throw new HTTPException(404, {message: 'Product not found'})
         }
 
+        if(data.category) {
+            const categoryExists = await db.select().from(categories).where(eq(categories.name, data.category)).get()
+            if (!categoryExists) {
+                throw new HTTPException(400, {message: 'Category not found'})
+            }
+        }
+
         if (data.discount && (data.discount < 0 || data.discount > 100)) {
             throw new HTTPException(400, {message: 'Invalid discount'})
         }
-        const currentPrice = data.price * (100 - data.discount) / 100
+        let currentPrice = product.currentPrice
+        if(data.price && data.discount) {
+            currentPrice = data.price * (100 - data.discount) / 100
+        } else if(data.price) {
+            currentPrice = data.price * (100 - product.discount) / 100
+        } else if(data.discount) {
+            currentPrice = product.price * (100 - data.discount) / 100
+        }
         const updatedProduct = {
             ...data,
             currentPrice,

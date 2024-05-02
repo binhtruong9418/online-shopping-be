@@ -8,16 +8,16 @@ export const users = sqliteTable('users', {
     email: text('email').notNull().unique(),
     password: text('password').notNull(),
     role: text('role').notNull().default('USER'),
-    createdAt: integer('created_at', {mode: 'timestamp'}).notNull().default(sql`(unixepoch())`),
-    updatedAt: integer('updated_at', {mode: 'timestamp'}).notNull().default(sql`(unixepoch())`),
+    createdAt: integer('created_at', {mode: 'timestamp'}).notNull().default(sql`(strftime('%s', 'now'))`),
+    updatedAt: integer('updated_at', {mode: 'timestamp'}).notNull().default(sql`(strftime('%s', 'now'))`),
 });
 
 export const categories = sqliteTable('categories', {
     id: integer('id').primaryKey({autoIncrement: true}),
     name: text('name').notNull().unique(),
     description: text('description'),
-    createdAt: integer('created_at', {mode: 'timestamp'}).notNull().default(sql`(unixepoch())`),
-    updatedAt: integer('updated_at', {mode: 'timestamp'}).notNull().default(sql`(unixepoch())`),
+    createdAt: integer('created_at', {mode: 'timestamp'}).notNull().default(sql`(strftime('%s', 'now'))`),
+    updatedAt: integer('updated_at', {mode: 'timestamp'}).notNull().default(sql`(strftime('%s', 'now'))`),
 })
 
 export const products = sqliteTable('products', {
@@ -29,36 +29,21 @@ export const products = sqliteTable('products', {
     discount: integer('discount').notNull().default(0),
     currentPrice: integer('current_price').notNull(),
     category: text('category').references(() => categories.name),
-    createdAt: integer('created_at', {mode: 'timestamp'}).notNull().default(sql`(unixepoch())`),
-    updatedAt: integer('updated_at', {mode: 'timestamp'}).notNull().default(sql`(unixepoch())`),
+    createdAt: integer('created_at', {mode: 'timestamp'}).notNull().default(sql`(strftime('%s', 'now'))`),
+    updatedAt: integer('updated_at', {mode: 'timestamp'}).notNull().default(sql`(strftime('%s', 'now'))`),
 })
 
-
-export const cartDetails = sqliteTable('cart_details', {
-    id: integer('id').primaryKey({autoIncrement: true}),
-    cartId: integer('cart_id').references(() => carts.id),
-    productId: integer('product_id').references(() => products.id),
-    quantity: integer('quantity').notNull().default(1),
-    price: integer('price').notNull(),
-    createdAt: integer('created_at', {mode: 'timestamp'}).notNull().default(sql`(unixepoch())`),
-    updatedAt: integer('updated_at', {mode: 'timestamp'}).notNull().default(sql`(unixepoch())`),
-})
 
 type CartDetails = {
-    id: number;
-    cartId: number;
     productId: number;
     quantity: number;
-    price: number;
-    createdAt: number;
-    updatedAt: number;
 }
 
 export const carts = sqliteTable('carts', {
     id: integer('id').primaryKey({autoIncrement: true}),
     products: text('products', {mode: 'json'}).$type<CartDetails[]>().default([]),
-    createdAt: integer('created_at', {mode: 'timestamp'}).notNull().default(sql`(unixepoch())`),
-    updatedAt: integer('updated_at', {mode: 'timestamp'}).notNull().default(sql`(unixepoch())`),
+    createdAt: integer('created_at', {mode: 'timestamp'}).notNull().default(sql`(strftime('%s', 'now'))`),
+    updatedAt: integer('updated_at', {mode: 'timestamp'}).notNull().default(sql`(strftime('%s', 'now'))`),
 })
 
 type ShippingDetail = {
@@ -73,8 +58,7 @@ type ShippingDetail = {
 
 export const orders = sqliteTable('orders', {
     id: integer('id').primaryKey({autoIncrement: true}),
-    cardId: integer('card_id').references(() => carts.id),
-    totalPayment: integer('total_payment').notNull(),
+    products: text('products', {mode: 'json'}).$type<CartDetails[]>().notNull(),
     note: text('note'),
     status: text('status', {
         enum:
@@ -96,8 +80,8 @@ export const orders = sqliteTable('orders', {
     paymentMethod: text('payment_method', {
         enum: [PAYMENT_METHOD.COD, PAYMENT_METHOD.VNPAY]
     }).notNull(),
-    createdAt: integer('created_at', {mode: 'timestamp'}).notNull().default(sql`(unixepoch())`),
-    updatedAt: integer('updated_at', {mode: 'timestamp'}).notNull().default(sql`(unixepoch())`),
+    createdAt: integer('created_at', {mode: 'timestamp'}).notNull().default(sql`(strftime('%s', 'now'))`),
+    updatedAt: integer('updated_at', {mode: 'timestamp'}).notNull().default(sql`(strftime('%s', 'now'))`),
 })
 
 

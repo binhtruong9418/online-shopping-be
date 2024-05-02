@@ -55,8 +55,6 @@ class AuthService {
       email: email,
       password: hash,
       name: name,
-      created_at: new Date().getTime(),
-      updated_at: new Date().getTime(),
       role: APP_ROLES.USER
     }).returning().get()
     const {password: userPassword, ...userWithoutPassword} = insertUser
